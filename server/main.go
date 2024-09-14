@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	pb "github.com/darshankapadiya19/rest-protobuf/proto/gen"
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/mux"
@@ -12,6 +13,7 @@ import (
 type HaloHandler struct{}
 
 func (h *HaloHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Request received with content of length: %d", r.ContentLength)
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Fatalf("Unable to read message from request : %v", err)
@@ -41,14 +43,14 @@ func (h *HaloHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Request received.")
+	log.Printf("[Protobuf] Request received with content of length: %d", r.ContentLength)
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Fatalf("Unable to read message from request : %v", err)
 	}
 
 	req := &pb.HelloRequest{}
-	err = proto.Unmarshal(data, req)
+	proto.Unmarshal(data, req)
 	if err != nil {
 		log.Fatalf("Unable to unmarshal message from request : %v", err)
 	}
@@ -64,11 +66,36 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
+func jsonHelloHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Request received with content of length: %d", r.ContentLength)
+	data, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Fatalf("Unable to read message from request : %v", err)
+	}
+
+	req := &pb.HelloRequest{}
+	err = json.Unmarshal(data, req)
+	if err != nil {
+		log.Fatalf("Unable to unmarshal message from request : %v", err)
+	}
+	log.Printf("Hello request form %s", req.Name)
+
+	resp := &pb.HelloResponse{
+		Message: "Hello " + req.Name + ", How's it going?",
+	}
+	response, err := json.Marshal(resp)
+	if err != nil {
+		log.Fatalf("Unable to marshal response : %v", err)
+	}
+	w.Write(response)
+}
+
 func main() {
 
 	router := mux.NewRouter()
 
 	router.HandleFunc("/hello", helloHandler).Methods("POST")
+	router.HandleFunc("/json_hello", jsonHelloHandler).Methods("POST")
 
 	haloHandler := &HaloHandler{}
 	router.Handle("/halo", haloHandler).Methods("POST")
