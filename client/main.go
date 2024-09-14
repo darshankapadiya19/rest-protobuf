@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	pb "github.com/darshankapadiya19/rest-protobuf/proto/gen"
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 	"io"
 	"log"
 	"net/http"

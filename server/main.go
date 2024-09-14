@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/json"
 	pb "github.com/darshankapadiya19/rest-protobuf/proto/gen"
-	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/mux"
+	"google.golang.org/protobuf/proto"
 	"io"
 	"log"
 	"net/http"
@@ -38,7 +38,6 @@ func (h *HaloHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalf("Unable to marshal response : %v", err)
 	}
-
 	w.Write(response)
 }
 
@@ -51,9 +50,6 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 
 	req := &pb.HelloRequest{}
 	proto.Unmarshal(data, req)
-	if err != nil {
-		log.Fatalf("Unable to unmarshal message from request : %v", err)
-	}
 	log.Printf("Hello request form %s", req.Name)
 
 	resp := &pb.HelloResponse{
