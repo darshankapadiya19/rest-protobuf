@@ -10,9 +10,9 @@ import (
 	"net/http"
 )
 
-type HaloHandler struct{}
+type grpcHaloHandler struct{}
 
-func (h *HaloHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *grpcHaloHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Request received with content of length: %d", r.ContentLength)
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -41,7 +41,7 @@ func (h *HaloHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
+func grpcHelloHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("[Protobuf] Request received with content of length: %d", r.ContentLength)
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -90,10 +90,10 @@ func main() {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/hello", helloHandler).Methods("POST")
+	router.HandleFunc("/hello", grpcHelloHandler).Methods("POST")
 	router.HandleFunc("/json_hello", jsonHelloHandler).Methods("POST")
 
-	haloHandler := &HaloHandler{}
+	haloHandler := &grpcHaloHandler{}
 	router.Handle("/halo", haloHandler).Methods("POST")
 
 	server := &http.Server{

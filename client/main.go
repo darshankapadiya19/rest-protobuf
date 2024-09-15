@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func sendRequest(req *pb.HelloRequest, endpoint string) (*pb.HelloResponse, error) {
+func sendGRPCRequest(req *pb.HelloRequest, endpoint string) (*pb.HelloResponse, error) {
 	log.Printf("Sending request to localhost:8080")
 	request, err := proto.Marshal(req)
 	if err != nil {
@@ -64,19 +64,30 @@ func sendJsonRequest(req *pb.HelloRequest, endpoint string) (*pb.HelloResponse, 
 
 func main() {
 	request := &pb.HelloRequest{Name: "Darshan"}
-	response, err := sendRequest(request, "/hello")
+
+	helloGRPCRequest(request)
+	helloJSONRequest(request)
+	haloGRPCRequest(request)
+}
+
+func helloGRPCRequest(request *pb.HelloRequest) {
+	response, err := sendGRPCRequest(request, "/hello")
 	if err != nil {
 		log.Fatalf("Error sending request: %s", err.Error())
 	}
 	log.Printf("Response from server: %v", response)
+}
 
-	response, err = sendJsonRequest(request, "/json_hello")
+func helloJSONRequest(request *pb.HelloRequest) {
+	response, err := sendJsonRequest(request, "/json_hello")
 	if err != nil {
 		log.Fatalf("Error sending request: %s", err.Error())
 	}
 	log.Printf("Response from server: %v", response)
+}
 
-	response, err = sendRequest(request, "/halo")
+func haloGRPCRequest(request *pb.HelloRequest) {
+	response, err := sendGRPCRequest(request, "/halo")
 	if err != nil {
 		log.Fatalf("Error sending request: %s", err.Error())
 	}
