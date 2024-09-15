@@ -16,6 +16,8 @@ func sendGRPCRequest(req *pb.HelloRequest, endpoint string) (*pb.HelloResponse, 
 	if err != nil {
 		return nil, err
 	}
+	log.Printf("rq: %s", string(request))
+	log.Println("========")
 	response, err := http.Post("http://localhost:8080"+endpoint, "application/x-binary", bytes.NewReader(request))
 	if err != nil {
 		log.Printf("Error sending request to localhost:8080: %v", err)
