@@ -1,9 +1,8 @@
 **Testing RESTful APIs with protobuf encoding**
 
-Create binary data file
-```shell
-echo -n "binary Darshan" | xxd -r -p > data.bin
-```
+Create binary data file using util/generateBinaryEncoding.go
+
+_Note: if stuck in binary conversion, search bell character [bin value 7]_
 
 Add data.bin file as binary input
 
@@ -20,4 +19,5 @@ http://localhost:8080/hello
 **Postman setup example:**
 
 ayHello using binary/protobuf over http/1.x
-![Example sayHello using binary/protobuf over http/1.x](img/sayHello-grpc.png)
+
+![Example sayHello using binary/protobuf over http/1.x](img/proto-bin-rest-grpc.png)
